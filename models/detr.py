@@ -60,9 +60,18 @@ class DETR(nn.Module):
             samples = nested_tensor_from_tensor_list(samples)
         features, pos = self.backbone(samples)
 
+        print("Features after backbone:")
+        print(features.shape)
+
+        print("Pos after backbone:")
+        print(pos.shape)
+
         src, mask = features[-1].decompose()
         assert mask is not None
         hs = self.transformer(self.input_proj(src), mask, self.query_embed.weight, pos[-1])[0]
+
+        print("Hidden state after transformer:")
+        print(hs.shape)
 
         outputs_class = self.class_embed(hs)
         outputs_coord = self.bbox_embed(hs).sigmoid()
