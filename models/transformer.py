@@ -220,19 +220,19 @@ class TransformerEncoderLayer(nn.Module):
 
         src2 = self.self_attn(q, k, value=src, attn_mask=src_mask,
                               key_padding_mask=src_key_padding_mask)[0]
-        print("Output of src after self-attention:")
+        print("Output of encoder hidden states after self-attention:")
         print(src2[:3,0,:3])
         src = src + self.dropout1(src2)
         src = self.norm1(src)
 
-        print("Output of src after self-attention layernorm:")
+        print("Output of encoder hidden states after self-attention layernorm:")
         print(src[:3,0,:3])
 
         src2 = self.linear2(self.dropout(self.activation(self.linear1(src))))
         src = src + self.dropout2(src2)
         src = self.norm2(src)
 
-        print("Output of src after final layernorm:")
+        print("Output of encoder hidden states after final layernorm:")
         print(src[:3,0,:3])
         return src
 
@@ -295,15 +295,23 @@ class TransformerDecoderLayer(nn.Module):
         tgt2 = self.self_attn(q, k, value=tgt, attn_mask=tgt_mask,
                               key_padding_mask=tgt_key_padding_mask)[0]
 
-        print("First elemenets of tgt after self-attention:")
+        print("First elements of decoder hidden states after self-attention:")
         print(tgt2[:3,0,:3])
 
         tgt = tgt + self.dropout1(tgt2)
         tgt = self.norm1(tgt)
+
+        print("First elements of decoder hidden states after self-attention layer norm:")
+        print(tgt[:3,0,:3])
+
         tgt2 = self.multihead_attn(query=self.with_pos_embed(tgt, query_pos),
                                    key=self.with_pos_embed(memory, pos),
                                    value=memory, attn_mask=memory_mask,
                                    key_padding_mask=memory_key_padding_mask)[0]
+
+        print("First elements of decoder hidden states after cross-attention:")
+        print(tgt2[:3,0,:3])
+
         tgt = tgt + self.dropout2(tgt2)
         tgt = self.norm2(tgt)
         tgt2 = self.linear2(self.dropout(self.activation(self.linear1(tgt))))
