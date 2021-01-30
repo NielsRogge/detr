@@ -68,7 +68,7 @@ class Transformer(nn.Module):
         print("Shape of encoder input:")
         print(src.shape)
         print("First few elements of encoder input:")
-        print(src[0,:3,:3])
+        print(src[:3,0,:3])
 
         print("First few elements of input mask:")
         print(mask[0,:3])
@@ -109,9 +109,15 @@ class TransformerEncoder(nn.Module):
                 pos: Optional[Tensor] = None):
         output = src
 
-        for layer in self.layers:
+        for i, layer in enumerate(self.layers):
+            print("First elements of inputs of encoder layer ", i)
+            print(output[:3,0,:3])
+            
             output = layer(output, src_mask=mask,
                            src_key_padding_mask=src_key_padding_mask, pos=pos)
+
+            print("First elements of outputs of encoder layer ", i)
+            print(layer_outputs[:3,0,:3])
 
         if self.norm is not None:
             output = self.norm(output)
