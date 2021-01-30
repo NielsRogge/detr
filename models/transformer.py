@@ -117,7 +117,7 @@ class TransformerEncoder(nn.Module):
                            src_key_padding_mask=src_key_padding_mask, pos=pos)
 
             print("First elements of outputs of encoder layer ", i)
-            print(layer_outputs[:3,0,:3])
+            print(output[:3,0,:3])
 
         if self.norm is not None:
             output = self.norm(output)
