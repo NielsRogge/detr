@@ -67,7 +67,7 @@ class DETR(nn.Module):
         assert mask is not None
         hs = self.transformer(self.input_proj(src), mask, self.query_embed.weight, pos[-1])[0]
 
-        print("Shape of hidden state after transformer - i.e. decoder output:")
+        print("Shape of hidden state after transformer - i.e. decoder output in the DETR model:")
         print(hs.shape)
 
         outputs_class = self.class_embed(hs)

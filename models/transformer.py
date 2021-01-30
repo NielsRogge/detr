@@ -74,6 +74,13 @@ class Transformer(nn.Module):
 
         hs = self.decoder(tgt, memory, memory_key_padding_mask=mask,
                           pos=pos_embed, query_pos=query_embed)
+
+        print("Shape of decoder output:") # should be of shape (batch_size, seq_len, hidden_size) 
+        print(hs.shape)
+
+        print("Decoder output first elements:")
+        print(hs[0,:3,:3])
+
         return hs.transpose(1, 2), memory.permute(1, 2, 0).view(bs, c, h, w)
 
 
