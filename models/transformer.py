@@ -193,7 +193,14 @@ class TransformerEncoderLayer(nn.Module):
                      src_mask: Optional[Tensor] = None,
                      src_key_padding_mask: Optional[Tensor] = None,
                      pos: Optional[Tensor] = None):
+        print("First elements of position embeddings:")
+        print(pos[:3,0,:3])
+        
         q = k = self.with_pos_embed(src, pos)
+
+        print("Hidden states after adding position embeddings:")
+        print(q[:3,0,:3])
+
         src2 = self.self_attn(q, k, value=src, attn_mask=src_mask,
                               key_padding_mask=src_key_padding_mask)[0]
         print("Output of src after self-attention:")
