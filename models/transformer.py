@@ -193,13 +193,13 @@ class TransformerEncoderLayer(nn.Module):
                      src_mask: Optional[Tensor] = None,
                      src_key_padding_mask: Optional[Tensor] = None,
                      pos: Optional[Tensor] = None):
-        print("First elements of position embeddings:")
-        print(pos[:3,0,:3])
+        # print("First elements of position embeddings:")
+        # print(pos[:3,0,:3])
         
         q = k = self.with_pos_embed(src, pos)
 
-        print("Hidden states after adding position embeddings:")
-        print(q[:3,0,:3])
+        # print("Hidden states after adding position embeddings:")
+        # print(q[:3,0,:3])
 
         src2 = self.self_attn(q, k, value=src, attn_mask=src_mask,
                               key_padding_mask=src_key_padding_mask)[0]
@@ -207,9 +207,16 @@ class TransformerEncoderLayer(nn.Module):
         print(src2[:3,0,:3])
         src = src + self.dropout1(src2)
         src = self.norm1(src)
+
+        print("Output of src after self-attention layernorm:")
+        print(src[:3,0,:3])
+
         src2 = self.linear2(self.dropout(self.activation(self.linear1(src))))
         src = src + self.dropout2(src2)
         src = self.norm2(src)
+
+        print("Output of src after final layernorm:")
+        print(src[:3,0,:3])
         return src
 
     def forward_pre(self, src,
