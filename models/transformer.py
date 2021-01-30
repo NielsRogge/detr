@@ -66,11 +66,11 @@ class Transformer(nn.Module):
         tgt = torch.zeros_like(query_embed)
         memory = self.encoder(src, src_key_padding_mask=mask, pos=pos_embed)
         
-        print("Shape of encoder output:") # should be of shape (batch_size, seq_len, hidden_size) 
+        print("Shape of encoder output:") # should be of shape (seq_len, batch_size, hidden_size) 
         print(memory.shape)
 
         print("Encoder output first elements:")
-        print(memory[0,:3,:3])
+        print(memory[:3,0,:3])
 
         hs = self.decoder(tgt, memory, memory_key_padding_mask=mask,
                           pos=pos_embed, query_pos=query_embed)
@@ -79,7 +79,7 @@ class Transformer(nn.Module):
         print(hs.shape)
 
         print("Decoder output first elements:")
-        print(hs[0,:3,:3])
+        print(hs[-1,:3,0,:3])
 
         return hs.transpose(1, 2), memory.permute(1, 2, 0).view(bs, c, h, w)
 
