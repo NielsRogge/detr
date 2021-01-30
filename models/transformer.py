@@ -45,16 +45,16 @@ class Transformer(nn.Module):
                 nn.init.xavier_uniform_(p)
 
     def forward(self, src, mask, query_embed, pos_embed):
-        print("Shape of src before going through transformer:")
-        print(src.shape)
-        print("Shape of mask before going through transformer:")
-        print(mask.shape)
+        # print("Shape of src before going through transformer:")
+        # print(src.shape)
+        # print("Shape of mask before going through transformer:")
+        # print(mask.shape)
 
-        print("Shape of query embeddings:")
-        print(query_embed.shape)
+        # print("Shape of query embeddings:")
+        # print(query_embed.shape)
 
-        print("Shape of position embeddings:")
-        print(pos_embed.shape)
+        # print("Shape of position embeddings:")
+        # print(pos_embed.shape)
         
         # flatten NxCxHxW to HWxNxC
         bs, c, h, w = src.shape
@@ -65,6 +65,13 @@ class Transformer(nn.Module):
 
         tgt = torch.zeros_like(query_embed)
         memory = self.encoder(src, src_key_padding_mask=mask, pos=pos_embed)
+        
+        print("Shape of encoder output:") # should be of shape (batch_size, seq_len, hidden_size) 
+        print(memory.shape)
+
+        print("Encoder output first elements:")
+        print(memory[0,:3,:3])
+
         hs = self.decoder(tgt, memory, memory_key_padding_mask=mask,
                           pos=pos_embed, query_pos=query_embed)
         return hs.transpose(1, 2), memory.permute(1, 2, 0).view(bs, c, h, w)
