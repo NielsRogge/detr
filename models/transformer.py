@@ -64,6 +64,13 @@ class Transformer(nn.Module):
         mask = mask.flatten(1)
 
         tgt = torch.zeros_like(query_embed)
+
+        print("First few elements of encoder input:")
+        print(src[0,:3,:3])
+
+        print("First few elements of input mask:")
+        print(mask[0,:3])
+
         memory = self.encoder(src, src_key_padding_mask=mask, pos=pos_embed)
         
         print("Shape of encoder output:") # should be of shape (seq_len, batch_size, hidden_size) 
