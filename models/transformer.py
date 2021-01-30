@@ -90,7 +90,7 @@ class Transformer(nn.Module):
         print(query_embed.shape)
 
         print("Query embeddings first few elements:")
-        print(query_embed[0,:3,:3])
+        print(query_embed[:3,0,:3])
 
         hs = self.decoder(tgt, memory, memory_key_padding_mask=mask,
                           pos=pos_embed, query_pos=query_embed)
@@ -294,6 +294,10 @@ class TransformerDecoderLayer(nn.Module):
         q = k = self.with_pos_embed(tgt, query_pos)
         tgt2 = self.self_attn(q, k, value=tgt, attn_mask=tgt_mask,
                               key_padding_mask=tgt_key_padding_mask)[0]
+
+        print("First elemenets of tgt after self-attention:")
+        print(tgt2[:3,0,:3])
+
         tgt = tgt + self.dropout1(tgt2)
         tgt = self.norm1(tgt)
         tgt2 = self.multihead_attn(query=self.with_pos_embed(tgt, query_pos),
