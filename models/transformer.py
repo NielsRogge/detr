@@ -45,16 +45,16 @@ class Transformer(nn.Module):
                 nn.init.xavier_uniform_(p)
 
     def forward(self, src, mask, query_embed, pos_embed):
-        # print("Shape of src before going through transformer:")
-        # print(src.shape)
-        # print("Shape of mask before going through transformer:")
-        # print(mask.shape)
+        print("Shape of src before going through transformer:")
+        print(src.shape)
+        print("Shape of mask before going through transformer:")
+        print(mask.shape)
 
-        # print("Shape of query embeddings:")
-        # print(query_embed.shape)
+        print("Shape of query embeddings:")
+        print(query_embed.shape)
 
-        # print("Shape of position embeddings:")
-        # print(pos_embed.shape)
+        print("Shape of position embeddings:")
+        print(pos_embed.shape)
         
         # flatten NxCxHxW to HWxNxC
         bs, c, h, w = src.shape

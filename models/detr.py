@@ -60,11 +60,11 @@ class DETR(nn.Module):
             samples = nested_tensor_from_tensor_list(samples)
         features, pos = self.backbone(samples)
 
-        # print("Features after backbone:")
-        # print(features.shape)
+        print("Features after backbone:")
+        print(features.shape)
 
-        # print("Pos after backbone:")
-        # print(pos.shape)
+        print("Pos after backbone:")
+        print(pos.shape)
 
         src, mask = features[-1].decompose()
         assert mask is not None
