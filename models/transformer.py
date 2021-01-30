@@ -65,11 +65,15 @@ class Transformer(nn.Module):
 
         tgt = torch.zeros_like(query_embed)
 
+        print("Shape of encoder input:")
+        print(src.shape)
         print("First few elements of encoder input:")
         print(src[0,:3,:3])
 
         print("First few elements of input mask:")
         print(mask[0,:3])
+        print("Number of true elements in input mask:")
+        print(torch.sum(mask))
 
         memory = self.encoder(src, src_key_padding_mask=mask, pos=pos_embed)
         
