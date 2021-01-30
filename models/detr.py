@@ -67,11 +67,17 @@ class DETR(nn.Module):
         assert mask is not None
         hs = self.transformer(self.input_proj(src), mask, self.query_embed.weight, pos[-1])[0]
 
-        # print("Shape of hidden state after transformer - i.e. decoder output in the DETR model:")
-        # print(hs.shape)
+        print("Shape of hidden state after transformer - i.e. decoder output in the DETR model:")
+        print(hs.shape)
 
         outputs_class = self.class_embed(hs)
         outputs_coord = self.bbox_embed(hs).sigmoid()
+
+        print("Shape of outputs_class:")
+        print(outputs_class.shape)
+        print("Shape of outputs_coord:")
+        print(outputs_coord.shape)
+
         out = {'pred_logits': outputs_class[-1], 'pred_boxes': outputs_coord[-1]}
         if self.aux_loss:
             out['aux_outputs'] = self._set_aux_loss(outputs_class, outputs_coord)
