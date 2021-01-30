@@ -65,15 +65,15 @@ class Transformer(nn.Module):
 
         tgt = torch.zeros_like(query_embed)
 
-        print("Shape of encoder input:")
-        print(src.shape)
-        print("First few elements of encoder input:")
-        print(src[:3,0,:3])
+        # print("Shape of encoder input:")
+        # print(src.shape)
+        # print("First few elements of encoder input:")
+        # print(src[:3,0,:3])
 
-        print("First few elements of input mask:")
-        print(mask[0,:3])
-        print("Number of true elements in input mask:")
-        print(torch.sum(mask))
+        # print("First few elements of input mask:")
+        # print(mask[0,:3])
+        # print("Number of true elements in input mask:")
+        # print(torch.sum(mask))
 
         memory = self.encoder(src, src_key_padding_mask=mask, pos=pos_embed)
         
@@ -82,6 +82,15 @@ class Transformer(nn.Module):
 
         print("Encoder output first elements:")
         print(memory[:3,0,:3])
+
+        print("Target shape:")
+        print(tgt.shape)
+
+        print("Query embeddings shape:")
+        print(query_embed.shape)
+
+        print("Query embeddings first few elements:")
+        print(query_embed[0,:3,:3])
 
         hs = self.decoder(tgt, memory, memory_key_padding_mask=mask,
                           pos=pos_embed, query_pos=query_embed)
@@ -110,14 +119,14 @@ class TransformerEncoder(nn.Module):
         output = src
 
         for i, layer in enumerate(self.layers):
-            print("First elements of inputs of encoder layer ", i)
-            print(output[:3,0,:3])
+            #print("First elements of inputs of encoder layer ", i)
+            #print(output[:3,0,:3])
             
             output = layer(output, src_mask=mask,
                            src_key_padding_mask=src_key_padding_mask, pos=pos)
 
-            print("First elements of outputs of encoder layer ", i)
-            print(output[:3,0,:3])
+            #print("First elements of outputs of encoder layer ", i)
+            #print(output[:3,0,:3])
 
         if self.norm is not None:
             output = self.norm(output)
@@ -145,12 +154,20 @@ class TransformerDecoder(nn.Module):
 
         intermediate = []
 
-        for layer in self.layers:
+        for i, layer in enumerate(self.layers):
+            
+            print("First elements of inputs of decoder layer ", i)
+            print(output[:3,0,:3])
+            
             output = layer(output, memory, tgt_mask=tgt_mask,
                            memory_mask=memory_mask,
                            tgt_key_padding_mask=tgt_key_padding_mask,
                            memory_key_padding_mask=memory_key_padding_mask,
                            pos=pos, query_pos=query_pos)
+
+            print("First elements of outputs of decoder layer ", i)
+            print(output[:3,0,:3])
+            
             if self.return_intermediate:
                 intermediate.append(self.norm(output))
 
