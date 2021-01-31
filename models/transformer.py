@@ -101,6 +101,9 @@ class Transformer(nn.Module):
         print("Decoder output first elements:")
         print(hs[-1,:3,0,:3])
 
+        print("Total sum of decoder output:")
+        print(torch.sum(hs[-1]))
+
         return hs.transpose(1, 2), memory.permute(1, 2, 0).view(bs, c, h, w)
 
 
