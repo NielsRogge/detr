@@ -41,7 +41,7 @@ class HungarianMatcher(nn.Module):
                  "pred_boxes": Tensor of dim [batch_size, num_queries, 4] with the predicted box coordinates
 
             targets: This is a list of targets (len(targets) = batch_size), where each target is a dict containing:
-                 "labels": Tensor of dim [num_target_boxes] (where num_target_boxes is the number of ground-truth
+                 "class_labels": Tensor of dim [num_target_boxes] (where num_target_boxes is the number of ground-truth
                            objects in the target) containing the class labels
                  "boxes": Tensor of dim [num_target_boxes, 4] containing the target box coordinates
 
@@ -59,7 +59,7 @@ class HungarianMatcher(nn.Module):
         out_bbox = outputs["pred_boxes"].flatten(0, 1)  # [batch_size * num_queries, 4]
 
         # Also concat the target labels and boxes
-        tgt_ids = torch.cat([v["labels"] for v in targets])
+        tgt_ids = torch.cat([v["class_labels"] for v in targets])
         tgt_bbox = torch.cat([v["boxes"] for v in targets])
 
         # Compute the classification cost. Contrary to the loss, we don't use the NLL,

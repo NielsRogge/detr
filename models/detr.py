@@ -20,7 +20,7 @@ from .transformer import build_transformer
 
 class DETR(nn.Module):
     """ This is the DETR module that performs object detection """
-    def __init__(self, backbone, transformer, num_classes, num_queries, aux_loss=False):
+    def __init__(self, backbone, transformer, num_classes, num_queries, aux_loss=True):
         """ Initializes the model.
         Parameters:
             backbone: torch module of the backbone to be used. See backbone.py
@@ -107,13 +107,13 @@ class SetCriterion(nn.Module):
 
     def loss_labels(self, outputs, targets, indices, num_boxes, log=True):
         """Classification loss (NLL)
-        targets dicts must contain the key "labels" containing a tensor of dim [nb_target_boxes]
+        targets dicts must contain the key "class_labels" containing a tensor of dim [nb_target_boxes]
         """
         assert 'pred_logits' in outputs
         src_logits = outputs['pred_logits']
 
         idx = self._get_src_permutation_idx(indices)
-        target_classes_o = torch.cat([t["labels"][J] for t, (_, J) in zip(targets, indices)])
+        target_classes_o = torch.cat([t["class_labels"][J] for t, (_, J) in zip(targets, indices)])
         target_classes = torch.full(src_logits.shape[:2], self.num_classes,
                                     dtype=torch.int64, device=src_logits.device)
         target_classes[idx] = target_classes_o
@@ -133,7 +133,7 @@ class SetCriterion(nn.Module):
         """
         pred_logits = outputs['pred_logits']
         device = pred_logits.device
-        tgt_lengths = torch.as_tensor([len(v["labels"]) for v in targets], device=device)
+        tgt_lengths = torch.as_tensor([len(v["class_labels"]) for v in targets], device=device)
         # Count the number of predictions that are NOT "no-object" (which is the last class)
         card_pred = (pred_logits.argmax(-1) != pred_logits.shape[-1] - 1).sum(1)
         card_err = F.l1_loss(card_pred.float(), tgt_lengths.float())
@@ -225,7 +225,7 @@ class SetCriterion(nn.Module):
         indices = self.matcher(outputs_without_aux, targets)
 
         # Compute the average number of target boxes accross all nodes, for normalization purposes
-        num_boxes = sum(len(t["labels"]) for t in targets)
+        num_boxes = sum(len(t["class_labels"]) for t in targets)
         num_boxes = torch.as_tensor([num_boxes], dtype=torch.float, device=next(iter(outputs.values())).device)
         if is_dist_avail_and_initialized():
             torch.distributed.all_reduce(num_boxes)
