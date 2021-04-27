@@ -39,13 +39,6 @@ class DETRsegm(nn.Module):
             samples = nested_tensor_from_tensor_list(samples)
         features, pos = self.detr.backbone(samples)
 
-        print("Number of features:")
-        print(len(features))
-        print(features[0].tensors.shape)
-        print(features[0].mask.shape)
-        print(features[1].tensors.shape)
-        print(features[2].tensors.shape)
-
         bs = features[-1].tensors.shape[0]
 
         src, mask = features[-1].decompose()
@@ -59,11 +52,18 @@ class DETRsegm(nn.Module):
         if self.detr.aux_loss:
             out['aux_outputs'] = self.detr._set_aux_loss(outputs_class, outputs_coord)
 
+        print("Shape of decoder output:")
         print(hs[-1].shape)
+        print("Shape of encoder output:")
         print(memory.shape)
+        print("Shape of mask:")
+        print(mask.shape)
         
         # FIXME h_boxes takes the last one computed, keep this in mind
         bbox_mask = self.bbox_attention(hs[-1], memory, mask=mask)
+
+        print("Shape of bbox_mask:")
+        print(bbox_mask.shape)
 
         seg_masks = self.mask_head(src_proj, bbox_mask, [features[2].tensors, features[1].tensors, features[0].tensors])
         outputs_seg_masks = seg_masks.view(bs, self.detr.num_queries, seg_masks.shape[-2], seg_masks.shape[-1])
