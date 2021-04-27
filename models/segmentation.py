@@ -39,6 +39,12 @@ class DETRsegm(nn.Module):
             samples = nested_tensor_from_tensor_list(samples)
         features, pos = self.detr.backbone(samples)
 
+        print("Number of features:")
+        print(len(features))
+        print(features[0].shape)
+        print(features[1].shape)
+        print(features[2].shape)
+
         bs = features[-1].tensors.shape[0]
 
         src, mask = features[-1].decompose()
@@ -52,6 +58,9 @@ class DETRsegm(nn.Module):
         if self.detr.aux_loss:
             out['aux_outputs'] = self.detr._set_aux_loss(outputs_class, outputs_coord)
 
+        print(hs[-1].shape)
+        print(memory.shape)
+        
         # FIXME h_boxes takes the last one computed, keep this in mind
         bbox_mask = self.bbox_attention(hs[-1], memory, mask=mask)
 
