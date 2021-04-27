@@ -41,9 +41,10 @@ class DETRsegm(nn.Module):
 
         print("Number of features:")
         print(len(features))
-        print(features[0].shape)
-        print(features[1].shape)
-        print(features[2].shape)
+        print(features[0].tensors.shape)
+        print(features[0].mask.shape)
+        print(features[1].tensors.shape)
+        print(features[2].tensors.shape)
 
         bs = features[-1].tensors.shape[0]
 
