@@ -52,23 +52,30 @@ class DETRsegm(nn.Module):
         if self.detr.aux_loss:
             out['aux_outputs'] = self.detr._set_aux_loss(outputs_class, outputs_coord)
 
-        print("Shape of decoder output:")
-        print(hs[-1].shape)
-        print("Shape of encoder output:")
+        print("Shape of memory:")
         print(memory.shape)
+        print("First elements of memory:")
+        print(memory[0,:3,:3,:3])
         print("Shape of mask:")
         print(mask.shape)
+        print("Sum of mask:")
+        print(mask.sum())
+        print("Shape of sequence output:")
+        print(hs[-1].shape)
+        print("Sum of sequence output:")
+        print(hs[-1].sum())
         
         # FIXME h_boxes takes the last one computed, keep this in mind
         bbox_mask = self.bbox_attention(hs[-1], memory, mask=mask)
 
-        print("Shape of bbox_mask:")
-        print(bbox_mask.shape)
-
         seg_masks = self.mask_head(src_proj, bbox_mask, [features[2].tensors, features[1].tensors, features[0].tensors])
+
         outputs_seg_masks = seg_masks.view(bs, self.detr.num_queries, seg_masks.shape[-2], seg_masks.shape[-1])
 
         out["pred_masks"] = outputs_seg_masks
+
+
+
         return out
 
 
